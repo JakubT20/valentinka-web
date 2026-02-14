@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="sk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Valentínka 💘</title>
+  <style>
+    :root{
+      --bg1:#0b0b14;
+      --bg2:#140b12;
+      --card:#0f1020cc;
+      --border:#ff2d6d55;
+      --text:#f6f6fb;
+      --muted:#cfcfe8;
+      --pink:#ff2d6d;
+      --pink2:#ff6aa2;
+      --shadow: 0 20px 60px rgba(0,0,0,.45);
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(800px 500px at 20% 10%, #ff2d6d22, transparent 60%),
+        radial-gradient(700px 500px at 80% 20%, #7c3aed22, transparent 60%),
+        radial-gradient(900px 700px at 50% 90%, #22c55e11, transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    .stage{
+      position:relative;
+      width:100%;
+      height:100vh;
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+
+    .card{
+      width:min(520px, 92vw);
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:26px 22px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .frame{
+      border:1px solid #ffffff1f;
+      border-radius:14px;
+      padding:18px 16px;
+      background: linear-gradient(180deg, #ffffff0d, transparent);
+      box-shadow: inset 0 0 0 1px #ff2d6d22;
+    }
+
+    h1{
+      margin:0 0 10px;
+      font-size:20px;
+      font-weight:700;
+      letter-spacing:.2px;
+      line-height:1.3;
+    }
+    p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.5;
+      font-size:14px;
+    }
+
+    .actions{
+      display:flex;
+      gap:12px;
+      margin-top:18px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+    }
+
+    button{
+      border:0;
+      cursor:pointer;
+      border-radius:12px;
+      padding:11px 14px;
+      font-weight:700;
+      color:var(--text);
+      background:#ffffff12;
+      transition: transform .08s ease, background .2s ease, box-shadow .2s ease;
+      user-select:none;
+    }
+    button:active{ transform: translateY(1px) scale(.99); }
+
+    .btn-primary{
+      background: linear-gradient(135deg, var(--pink), var(--pink2));
+      box-shadow: 0 10px 30px #ff2d6d33;
+    }
+    .btn-primary:hover{
+      box-shadow: 0 12px 40px #ff2d6d44;
+    }
+
+    .screen{ display:none; }
+    .screen.active{ display:block; }
+
+    /* druhá obrazovka: aby "Nie" mohlo utekať */
+    .playground{
+      position:relative;
+      width:100%;
+      height:320px;
+      margin-top:16px;
+      border-radius:14px;
+      border:1px dashed #ffffff22;
+      background: radial-gradient(500px 240px at 50% 40%, #ff2d6d14, transparent 60%);
+      overflow:hidden;
+    }
+
+    .question{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:100%;
+      text-align:center;
+      padding:18px;
+    }
+
+    .choice-row{
+      position:absolute;
+      left:0; right:0;
+      bottom:14px;
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      padding:0 14px;
+      pointer-events:none; /* tlačidlá si zapnú pointer cez seba */
+    }
+    .choice-row button{ pointer-events:auto; }
+
+    /* "Nie" bude absolútne a utekať */
+    #btnNo{
+      position:absolute;
+      left:50%;
+      top:55%;
+      transform: translate(-50%, -50%);
+      background:#ffffff12;
+      box-shadow: 0 8px 30px rgba(0,0,0,.35);
+    }
+
+    .tiny{
+      margin-top:10px;
+      font-size:12px;
+      color:#bdbdd9;
+      opacity:.9;
+    }
+
+    .success{
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid #22c55e33;
+      background:#22c55e12;
+      color:#d6ffe3;
+      display:none;
+    }
+    .success.show{ display:block; }
+
+    /* malý “neón” okolo cardu */
+    .glow{
+      position:absolute;
+      inset:auto;
+      width:min(560px, 96vw);
+      height:420px;
+      filter: blur(40px);
+      background: radial-gradient(closest-side, #ff2d6d33, transparent 70%);
+      z-index:-1;
+      opacity:.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="glow" aria-hidden="true"></div>
+
+    <div class="card">
+      <!-- SCREEN 1 -->
+      <section id="screen1" class="screen active">
+        <div class="frame">
+          <h1>💌 Budeš moja valentínka?</h1>
+          <p>Jedna rýchla otázka… a odpoveď si dobre rozmysli 😄</p>
+        </div>
+
+        <div class="actions">
+          <button class="btn-primary" id="btnNext">Ďalej</button>
+        </div>
+
+        <div class="tiny">Tip: otvor to na celú obrazovku, vyzerá to lepšie.</div>
+      </section>
+
+      <!-- SCREEN 2 -->
+      <section id="screen2" class="screen">
+        <div class="frame">
+          <h1>Tak ako? 🥺👉👈</h1>
+          <p>Vyber si jednu možnosť.</p>
+        </div>
+
+        <div class="playground" id="playground">
+          <div class="question">
+            <div>
+              <h1 style="margin-bottom:6px;">Budeš moja valentínka? 💘</h1>
+              <p>(„Nie“ je… ehm… dosť plaché.)</p>
+
+              <div class="success" id="successBox">
+                ✅ Super! Tak ideme na rande. 😄💞
+              </div>
+            </div>
+          </div>
+
+          <button id="btnNo" type="button">Nie</button>
+
+          <div class="choice-row">
+            <button class="btn-primary" id="btnYes" type="button">Áno</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const screen1 = document.getElementById("screen1");
+    const screen2 = document.getElementById("screen2");
+    const btnNext = document.getElementById("btnNext");
+    const btnYes = document.getElementById("btnYes");
+    const btnNo = document.getElementById("btnNo");
+    const playground = document.getElementById("playground");
+    const successBox = document.getElementById("successBox");
+
+    function showScreen(n){
+      screen1.classList.toggle("active", n === 1);
+      screen2.classList.toggle("active", n === 2);
+    }
+
+    btnNext.addEventListener("click", () => {
+      showScreen(2);
+      // hneď po prechode nastavíme "Nie" niekam rozumne
+      moveNoButton(true);
+    });
+
+    btnYes.addEventListener("click", () => {
+      successBox.classList.add("show");
+      btnYes.disabled = true;
+      btnYes.textContent = "Áno ✅";
+      // "Nie" môžeš schovať, aby to bolo čisté
+      btnNo.style.display = "none";
+    });
+
+    // Presun "Nie" na náhodnú pozíciu v rámci playgroundu
+    function moveNoButton(initial=false){
+      const pgRect = playground.getBoundingClientRect();
+      const noRect = btnNo.getBoundingClientRect();
+
+      // okraje, aby to nebolo nalepené na stene
+      const pad = 12;
+
+      const maxX = pgRect.width - noRect.width - pad * 2;
+      const maxY = pgRect.height - noRect.height - pad * 2;
+
+      // fallback, keby sa niečo pokazilo
+      const x = pad + Math.max(0, Math.floor(Math.random() * (maxX + 1)));
+      const y = pad + Math.max(0, Math.floor(Math.random() * (maxY + 1)));
+
+      btnNo.style.left = x + "px";
+      btnNo.style.top = y + "px";
+
+      // pri prvom presune nech je skôr "pri strede"
+      if(initial){
+        btnNo.style.left = Math.floor(pgRect.width * 0.55) + "px";
+        btnNo.style.top  = Math.floor(pgRect.height * 0.55) + "px";
+      }
+    }
+
+    // "Nie" uteká už pri priblížení myši
+    btnNo.addEventListener("mouseenter", () => moveNoButton(false));
+
+    // Aj na dotyk (mobil)
+    btnNo.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      moveNoButton(false);
+    }, { passive:false });
+
+    // Ak sa zmení veľkosť okna, nech nezostane mimo
+    window.addEventListener("resize", () => {
+      if(screen2.classList.contains("active") && btnNo.style.display !== "none"){
+        moveNoButton(false);
+      }
+    });
+  </script>
+</body>
+</html>
